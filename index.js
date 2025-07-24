@@ -19,7 +19,7 @@ app.get("/check-result", async (req, res) => {
   const page = await browser.newPage();
 
   try {
-    await page.goto("https://app55.nu.edu.bd/nu-web/admissionTestResultQueryForm", {
+    await page.goto("http://app55.nu.edu.bd/nu-web/admissionTestResultQueryForm", {
       waitUntil: "domcontentloaded",
       timeout: 60000,
     });
