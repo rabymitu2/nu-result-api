@@ -1,3 +1,7 @@
+"puppeteer": {
+  "executablePath": "/usr/bin/chromium-browser"
+}
+
 {
   "name": "nu-result-api",
   "version": "1.0.0",
