@@ -8,21 +8,23 @@ puppeteer.use(StealthPlugin());
 const app = express();
 app.use(cors());
 
-app.get("/check-result", async (req, res) => {
+app.get("/result", async (req, res) => {
   const roll = req.query.roll;
   if (!roll) return res.status(400).json({ error: "Missing roll or ID" });
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
-  });
-  const page = await browser.newPage();
-
+  let browser;
   try {
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+    const page = await browser.newPage();
+
     await page.goto("http://app55.nu.edu.bd/nu-web/admissionTestResultQueryForm", {
       waitUntil: "domcontentloaded",
       timeout: 60000,
     });
+
     await page.type('input[name="examRollOrAppId"]', roll);
     await Promise.all([
       page.click('button[type="submit"]'),
@@ -49,10 +51,10 @@ app.get("/check-result", async (req, res) => {
     res.json(result);
 
   } catch (err) {
-    await browser.close();
+    if (browser) await browser.close();
     res.status(500).json({ error: "Internal error", details: err.message });
   }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Running on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ API Live on https://nu-result-api.onrender.com`));
