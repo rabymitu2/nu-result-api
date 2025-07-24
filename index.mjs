@@ -17,7 +17,12 @@ app.get("/check-result", async (req, res) => {
   try {
     browser = await puppeteer.launch({
       headless: "new",
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--disable-dev-shm-usage"
+      ]
     });
 
     const page = await browser.newPage();
@@ -47,11 +52,18 @@ app.get("/check-result", async (req, res) => {
     });
 
     await browser.close();
-    if (!result.result) return res.status(404).json({ error: "Result not found." });
+
+    if (!result.result) {
+      return res.status(404).json({ error: "ফলাফল পাওয়া যায়নি!" });
+    }
+
     res.json(result);
   } catch (err) {
     if (browser) await browser.close();
-    res.status(500).json({ error: "Internal error", details: err.message });
+    res.status(500).json({
+      error: "Internal error",
+      details: err.message
+    });
   }
 });
 
